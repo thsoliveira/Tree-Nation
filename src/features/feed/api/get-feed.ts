@@ -1,14 +1,20 @@
 import { apiClient } from "../../../shared/api";
 import { FeedResponseSchema, type FeedResponse } from "../types";
 
-export async function getFeed({ page, limit = 10 }: { page: number; limit?: number }): Promise<FeedResponse> {
-  const response = await apiClient.get('/trees/feed', {
+interface GetFeedParams {
+  page: number
+  limit?: number
+}
+
+export async function getFeed({ page, limit = 10 }: GetFeedParams): Promise<FeedResponse> {
+  const response = await apiClient.get("/trees/feed", {
     params: {
       page,
       limit,
-      orderByField: 'score',
-      sortDirection: 'DESC',
+      orderByField: "score",
+      sortDirection: "DESC",
     },
-  })
-  return FeedResponseSchema.parse(response.data)
+  });
+
+  return FeedResponseSchema.parse(response.data);
 }

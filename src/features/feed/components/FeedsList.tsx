@@ -1,4 +1,5 @@
 import { useFeed } from "../../../hooks/use-feed"
+import { TreeCard } from "./TreeCard"
 
 
 export function FeedList() {
@@ -30,11 +31,8 @@ export function FeedList() {
   return (
     <div className="space-y-6">
       {!isFirstLoad  && (
-        trees.map((tree) => (
-         <div key={tree.id} className="flex items-center gap-4 bg-white rounded-lg p-4 shadow">
-              <h3 className="font-semibold text-gray-900">{'Tree'}</h3>
-              <p className="text-sm text-gray-500">Planted on</p>
-          </div>
+         trees.map((tree) => (
+          <TreeCard key={tree.id} tree={tree} />
         ))
       )}
       

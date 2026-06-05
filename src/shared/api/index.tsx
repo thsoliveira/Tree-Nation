@@ -1,34 +1,35 @@
-import axios, { type InternalAxiosRequestConfig } from "axios";
+import axios from "axios";
+import { API_BASE_URL } from "../constants";
 
 export const apiClient = axios.create({
+	baseURL: API_BASE_URL,
 	headers: {
+		"AllOrigins": "true",
 		"X-API-VERSION": "1",
 		"Content-Type": "application/json",
 	},
 });
 
-apiClient.interceptors.request.use(
-	(config: InternalAxiosRequestConfig) => {
-		if (import.meta.env.DEV) {
-			config.baseURL = "/api";
-			return config;
-		}
-
-		// Production: use proxy
-		const url = new URL(config.url || "", "https://youcannevertestenough.tree-nation.com");
+apiClient.interceptors.request.use((config) => {
+	if (!import.meta.env.DEV) {
+		// For production: build full target URL with all query parameters
+		const targetBaseUrl = "https://youcannevertestenough.tree-nation.com";
+		const fullTargetUrl = new URL(config.url || "", targetBaseUrl);
 
 		if (config.params) {
 			Object.entries(config.params).forEach(([key, value]) => {
 				if (value != null) {
-					url.searchParams.set(key, String(value));
+					fullTargetUrl.searchParams.set(key, String(value));
 				}
 			});
 		}
 
-		config.url = "https://api.allorigins.win/raw";
-		config.params = { url: encodeURIComponent(url.toString()) };
+		// Now use allorigins proxy with the encoded full URL
+		const url = `https://corsproxy.io/?url=${encodeURIComponent(fullTargetUrl.toString())}`;
 
-		return config;
-	},
-	(error) => Promise.reject(error),
-);
+		config.url = url;
+		config.baseURL = "";
+		config.params = {};
+	}
+	return config;
+});

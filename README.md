@@ -125,10 +125,12 @@ All endpoints are proxied through `/api` in development and point to `https://yo
 
 ## Assumptions
 
-1. **Infinite Scroll Feed**: Users can continuously scroll to load more trees.
-2. **Tree Card Interactions**: Each tree has expandable details with comments and likes.
-3. **Lazy Loading**: Comments and likes are only fetched when a tree card is expanded.
-4. **Responsive Design**: The app works well on both mobile and desktop screens.
-5. **Caching**: TanStack Query caches tree feed, comments, and likes data for a better user experience.
-6. **User Avatars**: Users have optional profile images, falling back to initials if unavailable.
-7. **Sorting**: The feed can be sorted by different fields in ascending or descending order.
+1. **Infinite Scroll Feed**: Users can continuously scroll to load more trees. The feed fetches the next page automatically as the user approaches the bottom.
+2. **Tree Card Interactions**: Each tree has expandable details showing comments and likes merged into a single list ordered by `created_at` (most recent first).
+3. **Lazy Loading**: Comments and likes are only fetched when a tree card is expanded to minimize initial load time.
+4. **Responsive Design**: The app works well on both mobile and desktop screens with a clean, usable UI.
+5. **Caching**: TanStack Query caches tree feed, comments, and likes data for a better user experience and reduced API calls.
+6. **State Management**: Loading, empty, and error states are explicitly handled for all API endpoints.
+7. **API Integration**: Uses real public API endpoints without authentication. Auth-only behaviors (like `is_liked` flag) are ignored.
+8. **Sorting**: Feed is sorted by `score` in descending order by default. Comments and likes are sorted by `created_at`.
+9. **User Avatars**: Users have optional profile images, falling back to initials if unavailable.

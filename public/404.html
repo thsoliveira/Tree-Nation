@@ -8,6 +8,9 @@
   </head>
   <body class="m-0 p-0 antialiased">
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <script type="module">
+      // Redirect to index.html with hash
+      window.location.href = window.location.origin + '/Tree-Nation/#/' + window.location.pathname.slice(1);
+    </script>
   </body>
 </html>

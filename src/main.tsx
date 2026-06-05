@@ -1,12 +1,11 @@
-import { createRouter, RouterProvider, createHashHistory } from "@tanstack/react-router";
+import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { Providers } from "./app/providers.tsx";
 import { routeTree } from "./app/router";
 import "./index.css";
 
-const history = createHashHistory();
-const router = createRouter({ routeTree, history });
+const router = createRouter({ routeTree });
 
 const rootElement = document.getElementById("root");
 if (!rootElement) {
@@ -18,5 +17,5 @@ createRoot(rootElement).render(
 		<Providers>
 			<RouterProvider router={router} />
 		</Providers>
-	</StrictMode>,
+	</StrictMode>
 );

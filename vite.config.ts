@@ -6,6 +6,7 @@ export default defineConfig(({ mode }) => {
 
 	return {
 		plugins: [react()],
+		base: mode === "production" ? "/Tree-Nation/" : "/",
 		server: {
 			port: 3000,
 			strictPort: true,

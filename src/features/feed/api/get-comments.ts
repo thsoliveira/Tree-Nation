@@ -1,7 +1,10 @@
 import { apiClient } from '../../../shared/api'
-import { type Comment, CommentSchema } from '../types'
+import type { Comment } from '../types'
 
-export async function getComments(treeId: string): Promise<Comment[]> {
-  const response = await apiClient.get(`/tree/getComments/${treeId}`)
-  return CommentSchema.array().parse(response.data.data)
+export interface GetCommentResponse {
+  data: Comment[]
+}
+export async function getComments(treeId: string): Promise<GetCommentResponse> {
+  const { data } = await apiClient.get<GetCommentResponse>(`/tree/getComments/${treeId}`);
+  return data;
 }

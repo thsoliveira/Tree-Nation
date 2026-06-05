@@ -7,7 +7,7 @@ interface ActivityListProps {
   isError: boolean
 }
 
-export function ActivityList({ activities, isLoading, isError }: ActivityListProps) {
+export function ActivityList({ activities = [], isLoading, isError }: ActivityListProps) {
   if (isLoading) {
     return (
       <div className="text-center py-6">

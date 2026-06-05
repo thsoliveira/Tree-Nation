@@ -1,5 +1,5 @@
 import { apiClient } from "../../../shared/api";
-import { FeedResponseSchema, type FeedResponse } from "../types";
+import type { Tree } from "../types";
 
 interface GetFeedParams {
   page: number
@@ -8,8 +8,13 @@ interface GetFeedParams {
   sortDirection?: "ASC" | "DESC"
 }
 
-export async function getFeed({ page, limit = 10, orderByField = "score", sortDirection = "DESC" }: GetFeedParams): Promise<FeedResponse> {
-  const response = await apiClient.get("/trees/feed", {
+export interface GetFeedResponse {
+  data: Tree[]
+  meta: { is_last_page: boolean }
+}
+
+export async function getFeed({ page, limit = 10, orderByField = "score", sortDirection = "DESC" }: GetFeedParams): Promise<GetFeedResponse> {
+  const { data } = await apiClient.get<GetFeedResponse>("/trees/feed", {
     params: {
       page,
       limit,
@@ -18,5 +23,5 @@ export async function getFeed({ page, limit = 10, orderByField = "score", sortDi
     },
   });
 
-  return FeedResponseSchema.parse(response.data);
+  return data;
 }

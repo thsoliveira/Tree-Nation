@@ -3,14 +3,14 @@ import { useComments } from './use-comments'
 import { useLikes } from './use-likes'
 
 export function useTreeInteractions(treeId: string, isExpanded: boolean) {
-  const commentsQuery = useComments(treeId, isExpanded)
-  const likesQuery = useLikes(treeId, isExpanded)
+  const { data: commentsResponse, isLoading: commentsLoading, isError: commentsIsError } = useComments(treeId, isExpanded)
+  const { data: likesResponse, isLoading: likesLoading, isError: likesIsError } = useLikes(treeId, isExpanded)
 
-  const activities = mergeAndSortActivities(commentsQuery.data, likesQuery.data)
+  const activities = mergeAndSortActivities(commentsResponse?.data, likesResponse?.data)
 
   return {
     activities,
-    isLoading: commentsQuery.isLoading || likesQuery.isLoading,
-    isError: commentsQuery.isError || likesQuery.isError,
+    isLoading: commentsLoading || likesLoading,
+    isError: commentsIsError || likesIsError,
   }
 }

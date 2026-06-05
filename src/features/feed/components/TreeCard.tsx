@@ -3,7 +3,7 @@ import { ActivityList } from './ActivityList'
 import { TreeImage } from './TreeImage'
 import { formatDate } from '../../../shared/utils'
 import type { Tree } from '../types'
-import { useTreeInteractions } from '../../../hooks/use-tree-interactions'
+import { useTreeInteractions } from '../hooks/use-tree-interactions'
 
 interface TreeCardProps {
   tree: Tree

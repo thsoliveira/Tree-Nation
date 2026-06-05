@@ -1,3 +1,4 @@
+import { Avatar } from "../../../shared/components/Avatar"
 import { formatDate } from "../../../shared/utils"
 import type { Activity } from "../types"
 
@@ -11,6 +12,7 @@ export function ActivityItem({ activity }: ActivityItemProps) {
 
   return (
     <div className="flex gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-xl bg-white border border-gray-100">
+      <Avatar src={user?.profile_img || ''} name={fullName} size="md" />
       <div className="flex-1 min-w-0">
         <p className="text-sm text-gray-900">
           <span className="font-semibold">{fullName}</span>

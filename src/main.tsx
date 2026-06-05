@@ -1,3 +1,4 @@
+import "@js-temporal/polyfill";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
@@ -6,8 +7,8 @@ import { routeTree } from "./app/router";
 import "./index.css";
 
 const router = createRouter({
-  routeTree,
-  basepath: import.meta.env.DEV ? "/" : "/Tree-Nation/",
+	routeTree,
+	basepath: import.meta.env.DEV ? "/" : "/Tree-Nation/",
 });
 
 const rootElement = document.getElementById("root");
@@ -20,5 +21,5 @@ createRoot(rootElement).render(
 		<Providers>
 			<RouterProvider router={router} />
 		</Providers>
-	</StrictMode>
+	</StrictMode>,
 );

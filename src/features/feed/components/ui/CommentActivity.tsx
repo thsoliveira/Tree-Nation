@@ -1,4 +1,5 @@
 import { Avatar } from "../../../../shared/components/Avatar";
+import { Text } from "../../../../shared/components/Text";
 import { formatDate } from "../../../../shared/utils";
 import type { Comment } from "../../types";
 
@@ -17,16 +18,18 @@ export function CommentActivity({ comment }: CommentActivityProps) {
 		<div className="flex gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-xl bg-white border border-gray-100">
 			<Avatar src={user?.profile_img || ""} name={fullName} size="md" />
 			<div className="flex-1 min-w-0">
-				<p className="text-sm text-gray-900">
+				<Text variant="sm">
 					<span className="font-semibold">{fullName}</span>
 					<span className="text-gray-600"> commented</span>
-				</p>
+				</Text>
 				{comment.content && (
-					<p className="text-sm text-gray-700 mt-1">{comment.content}</p>
+					<Text variant="sm" className="mt-1">
+						{comment.content}
+					</Text>
 				)}
-				<p className="text-xs text-gray-400 mt-1">
+				<Text variant="xs" color="muted" className="mt-1">
 					{formatDate(comment.created_at)}
-				</p>
+				</Text>
 			</div>
 		</div>
 	);

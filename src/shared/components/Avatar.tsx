@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { cleanImageUrl } from "../utils";
+import { Image } from "./Image";
 
 interface AvatarProps {
 	src?: string;
@@ -23,25 +23,26 @@ const sizeToThumbnail = {
 
 export function Avatar({ src, name, size = "md" }: AvatarProps) {
 	const [imageError, setImageError] = useState(false);
-	const cleanedSrc = cleanImageUrl(src, sizeToThumbnail[size]);
 	const initials = name?.charAt(0).toUpperCase() ?? "?";
 
 	return (
 		<div
 			className={`${sizeClasses[size]} rounded-full overflow-hidden flex-shrink-0`}
 		>
-			{cleanedSrc && !imageError ? (
-				<img
-					src={cleanedSrc}
+			{!imageError ? (
+				<Image
+					src={src}
 					alt={name ?? "Avatar"}
 					className="w-full h-full object-cover"
+					size={sizeToThumbnail[size]}
 					onError={() => setImageError(true)}
 				/>
-			) : (
+			) : null}
+			{imageError || !src ? (
 				<div className="w-full h-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center text-white font-bold">
 					{initials}
 				</div>
-			)}
+			) : null}
 		</div>
 	);
 }

@@ -38,10 +38,10 @@ export function ActivityList({
 	}
 
 	return (
-		<div className="space-y-4">
+		<ul className="space-y-4">
 			{activities.map((activity) => (
 				<ActivityItem key={activity?.id} activity={activity} />
 			))}
-		</div>
+		</ul>
 	);
 }

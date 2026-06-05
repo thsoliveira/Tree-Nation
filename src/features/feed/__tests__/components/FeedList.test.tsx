@@ -1,15 +1,15 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
 import { HttpResponse, http } from "msw";
+import { vi } from "vitest";
 import { server } from "../../../../mocks/server";
 import { FeedList } from "../../components/page/FeedsList";
-import { vi } from "vitest";
 
 vi.mock("@tanstack/react-router", () => ({
-  useSearch: () => ({
-    orderByField: "score",
-    sortDirection: "DESC",
-  }),
+	useSearch: () => ({
+		orderByField: "score",
+		sortDirection: "DESC",
+	}),
 }));
 
 const createTestQueryClient = () =>
@@ -33,7 +33,7 @@ const renderWithProviders = (component: React.ReactNode) => {
 describe("FeedList Integration Tests", () => {
 	it("should render loading state initially and then trees on success", async () => {
 		renderWithProviders(<FeedList />);
-		
+
 		expect(screen.getByText(/Loading trees/i)).toBeInTheDocument();
 
 		await waitFor(() => {

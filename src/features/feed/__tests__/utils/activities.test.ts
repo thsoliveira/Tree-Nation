@@ -1,9 +1,9 @@
-import type { Comment, Like, Activity } from "../../types";
+import type { Activity, Comment, Like } from "../../types";
 import {
 	mergeAndSortActivities,
+	sortActivities,
 	transformCommentsToActivities,
 	transformLikesToActivities,
-	sortActivities,
 } from "../../utils/activities";
 
 describe("activities utils", () => {
@@ -75,7 +75,10 @@ describe("activities utils", () => {
 
 	describe("mergeAndSortActivities", () => {
 		it("should merge comments and likes and sort by created_at descending", () => {
-			const result = mergeAndSortActivities([comment1, comment2], [like1, like2]);
+			const result = mergeAndSortActivities(
+				[comment1, comment2],
+				[like1, like2],
+			);
 
 			expect(result).toHaveLength(4);
 			expect(result[0].id).toBe(4);

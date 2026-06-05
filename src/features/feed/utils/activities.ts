@@ -1,47 +1,18 @@
 import type { Activity, Comment, Like } from "../types";
 
-interface ActivityTransformer<T> {
-	transform(item: T): Activity;
-}
-
-class CommentTransformer implements ActivityTransformer<Comment> {
-	transform(comment: Comment): Activity {
-		return { ...comment, type: "comment" };
-	}
-}
-
-class LikeTransformer implements ActivityTransformer<Like> {
-	transform(like: Like): Activity {
-		return { ...like, type: "like" };
-	}
-}
-
-interface ActivitySorter {
-	sort(activities: Activity[]): Activity[];
-}
-
-class DateDescendingSorter implements ActivitySorter {
-	sort(activities: Activity[]): Activity[] {
-		return [...activities].sort(
-			(a, b) =>
-				new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
-		);
-	}
-}
-
 export function transformCommentsToActivities(comments: Comment[]): Activity[] {
-	const transformer = new CommentTransformer();
-	return comments.map(transformer.transform);
+	return comments.map((comment) => ({ ...comment, type: "comment" }));
 }
 
 export function transformLikesToActivities(likes: Like[]): Activity[] {
-	const transformer = new LikeTransformer();
-	return likes.map(transformer.transform);
+	return likes.map((like) => ({ ...like, type: "like" }));
 }
 
 export function sortActivities(activities: Activity[]): Activity[] {
-	const sorter = new DateDescendingSorter();
-	return sorter.sort(activities);
+	return [...activities].sort(
+		(a, b) =>
+			new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+	);
 }
 
 export function mergeAndSortActivities(

@@ -7,9 +7,13 @@ interface ActivityItemProps {
 }
 
 export function ActivityItem({ activity }: ActivityItemProps) {
-	if (activity.type === "comment") {
-		return <CommentActivity comment={activity} />;
-	}
-	
-	return <LikeActivity like={activity} />;
+	return (
+		<li>
+			{activity.type === "comment" ? (
+				<CommentActivity comment={activity} />
+			) : (
+				<LikeActivity like={activity} />
+			)}
+		</li>
+	);
 }

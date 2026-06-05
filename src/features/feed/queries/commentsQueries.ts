@@ -1,14 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "../../../shared/api";
-import type { Comment } from "../types";
 import { commentsKeys } from "../queryKeys";
+import type { Comment } from "../types";
 
 interface GetCommentsResponse {
 	data: Comment[];
 }
 
 async function getComments(treeId: string): Promise<GetCommentsResponse> {
-	const { data } = await apiClient.get<GetCommentsResponse>(`/tree/getComments/${treeId}`);
+	const { data } = await apiClient.get<GetCommentsResponse>(
+		`/tree/getComments/${treeId}`,
+	);
 	return data;
 }
 

@@ -1,15 +1,24 @@
+import { Heading } from "../../../../shared/components/Heading";
+import { Text } from "../../../../shared/components/Text";
+
 interface FeedStatusCardProps {
-  icon: string;
-  title: string;
-  description: string;
+	icon: string;
+	title: string;
+	description: string;
 }
 
-export function FeedStatusCard({ icon, title, description }: FeedStatusCardProps) {
-  return (
-    <div className="text-center py-12 sm:py-16 bg-white rounded-xl shadow-sm">
-      <div className="text-3xl sm:text-4xl mb-3 sm:mb-4">{icon}</div>
-      <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">{title}</h2>
-      <p className="text-gray-500">{description}</p>
-    </div>
-  );
+export function FeedStatusCard({
+	icon,
+	title,
+	description,
+}: FeedStatusCardProps) {
+	return (
+		<div className="text-center py-12 sm:py-16 bg-white rounded-xl shadow-sm">
+			<div className="text-3xl sm:text-4xl mb-3 sm:mb-4">{icon}</div>
+			<Heading level="h2" className="mb-2">
+				{title}
+			</Heading>
+			<Text color="secondary">{description}</Text>
+		</div>
+	);
 }

@@ -1,22 +1,14 @@
-import { useRef, useEffect } from "react";
+
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { useSearch } from "@tanstack/react-router";
-import { TreeCard } from "../ui/TreeCard";
-import { FeedActionBanner } from "../ui/FeedActionBanner";
+import { useRef } from "react";
+import { useFeed } from "../../queries/feedQueries";
+import { FeedbackBanner } from "../ui/FeedbackBanner";
+import { Button } from "../../../../shared/components/Button";
 import { FeedLoadingState } from "../ui/FeedLoadingState";
 import { FeedStatusCard } from "../ui/FeedStatusCard";
-import { useFeed } from "../../queries/feedQueries";
-
-function LoadMoreSentinel({ onLoadMore }: { onLoadMore: () => void }) {
-	useEffect(() => {
-		onLoadMore();
-	}, [onLoadMore]);
-	return null;
-}
+import { TreeCard } from "../ui/TreeCard";
 
 export function FeedList() {
-	const search = useSearch({ from: "/" });
-	
 	const {
 		data,
 		status,
@@ -29,28 +21,36 @@ export function FeedList() {
 		fetchPreviousPage,
 		hasNextPage,
 		hasPreviousPage,
-	} = useFeed({
-		orderByField: search.orderByField,
-		sortDirection: search.sortDirection,
-	});
-	
+	} = useFeed({ orderByField: "score", sortDirection: "DESC" });
+
 	const trees = data?.pages.flatMap((page) => page.data) || [];
 	const hasTrees = trees.length > 0;
 	const isFirstLoad = status === "pending" && !data;
 
 	const parentRef = useRef<HTMLDivElement>(null);
-
-	// Add 1 extra item for the load more sentinel when there's more to load
-	const itemCount = hasNextPage ? trees.length + 1 : trees.length;
+	const lastIndexRef = useRef(-1);
 
 	const virtualizer = useVirtualizer({
-		count: itemCount,
+		count: trees.length,
 		getScrollElement: () => parentRef.current,
-		estimateSize: (index) => index < trees.length ? 500 : 1,
+		estimateSize: () => 500,
 		overscan: 5,
 	});
 
 	const virtualItems = virtualizer.getVirtualItems();
+
+	if (virtualItems.length > 0) {
+		const lastVirtualItem = virtualItems[virtualItems.length - 1];
+		if (
+			lastVirtualItem.index >= trees.length - 1 &&
+			lastVirtualItem.index > lastIndexRef.current &&
+			hasNextPage &&
+			!isFetchingNextPage
+		) {
+			lastIndexRef.current = lastVirtualItem.index;
+			void fetchNextPage();
+		}
+	}
 
 	if (status === "error" && !hasTrees) {
 		return (
@@ -75,6 +75,8 @@ export function FeedList() {
 	return (
 		<div ref={parentRef} className="h-[calc(100vh-200px)] overflow-auto">
 			<div
+				role="feed"
+				aria-live="polite"
 				style={{
 					height: `${virtualizer.getTotalSize()}px`,
 					width: "100%",
@@ -86,42 +88,26 @@ export function FeedList() {
 				)}
 
 				{isFetchPreviousPageError && hasTrees && (
-					<FeedActionBanner
-						title="Could not load previous trees."
-						onRetry={fetchPreviousPage}
-						actionLabel="Try again"
-					/>
+					<FeedbackBanner title="Could not load previous trees.">
+						<Button
+							type="button"
+							onClick={() => fetchPreviousPage()}
+							variant="warning"
+							size="sm"
+						>
+							Try again
+						</Button>
+					</FeedbackBanner>
 				)}
 
-				{isFetchingPreviousPage && <FeedLoadingState message="Loading previous trees..." />}
+				{isFetchingPreviousPage && (
+					<FeedLoadingState message="Loading previous trees..." />
+				)}
 
 				{isFirstLoad ? (
 					<FeedLoadingState message="Loading trees..." />
 				) : (
 					virtualItems.map((virtualItem) => {
-						// Check if this is the sentinel item
-						if (virtualItem.index === trees.length) {
-							return (
-								<div
-									key={virtualItem.key}
-									data-index={virtualItem.index}
-									ref={virtualizer.measureElement}
-									style={{
-										position: "absolute",
-										top: 0,
-										left: 0,
-										width: "100%",
-										transform: `translateY(${virtualItem.start}px)`,
-									}}
-								>
-									{hasNextPage && !isFetchingNextPage && (
-										<LoadMoreSentinel onLoadMore={fetchNextPage} />
-									)}
-									{isFetchingNextPage && <FeedLoadingState message="Loading trees..." />}
-								</div>
-							);
-						}
-
 						const tree = trees[virtualItem.index];
 						return (
 							<div
@@ -144,13 +130,30 @@ export function FeedList() {
 					})
 				)}
 
+				{!isFirstLoad && isFetchingNextPage && (
+					<FeedLoadingState message="Loading trees..." />
+				)}
+
 				{isFetchNextPageError && hasTrees && (
-					<FeedActionBanner
+					<FeedbackBanner
 						title="Could not load more trees."
-						description={error instanceof Error ? error.message : "Please try again."}
-						onRetry={fetchNextPage}
-						actionLabel="Try again"
-					/>
+						description={
+							error instanceof Error ? error.message : "Please try again."
+						}
+					>
+						<Button
+							type="button"
+							onClick={() => void fetchNextPage()}
+							variant="warning"
+							size="sm"
+						>
+							Try again
+						</Button>
+					</FeedbackBanner>
+				)}
+
+				{hasNextPage && !isFetchNextPageError && (
+					<div className="py-6 sm:py-8 text-center" />
 				)}
 			</div>
 		</div>

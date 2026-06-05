@@ -26,7 +26,7 @@ apiClient.interceptors.request.use(
 		}
 
 		config.url = "https://api.allorigins.win/raw";
-		config.params = { url: url.toString() };
+		config.params = { url: encodeURIComponent(url.toString()) };
 
 		return config;
 	},

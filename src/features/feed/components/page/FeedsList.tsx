@@ -1,5 +1,5 @@
 import { useInView } from "react-intersection-observer";
-import { useNavigate, useSearch } from "@tanstack/react-router";
+import { useSearch } from "@tanstack/react-router";
 import { TreeCard } from "../ui/TreeCard";
 import { FeedActionBanner } from "../ui/FeedActionBanner";
 import { FeedLoadingState } from "../ui/FeedLoadingState";
@@ -7,7 +7,6 @@ import { FeedStatusCard } from "../ui/FeedStatusCard";
 import { useFeed } from "../../queries/feedQueries";
 
 export function FeedList() {
-	const navigate = useNavigate({ from: "/" });
 	const search = useSearch({ from: "/" });
 	
 	const {
@@ -23,7 +22,6 @@ export function FeedList() {
 		hasNextPage,
 		hasPreviousPage,
 	} = useFeed({
-		initialPage: search.page,
 		orderByField: search.orderByField,
 		sortDirection: search.sortDirection,
 	});
@@ -36,13 +34,7 @@ export function FeedList() {
 		threshold: 0.1,
 		onChange: (inView) => {
 			if (inView && hasNextPage && !isFetchingNextPage) {
-				void fetchNextPage().then(() => {
-					const newPage = search.page + (data?.pages.length || 1);
-					void navigate({
-						search: { ...search, page: newPage },
-						replace: true,
-					});
-				});
+				void fetchNextPage();
 			}
 		},
 	});
@@ -51,13 +43,7 @@ export function FeedList() {
 		threshold: 0.1,
 		onChange: (inView) => {
 			if (inView && hasPreviousPage && !isFetchingPreviousPage) {
-				void fetchPreviousPage().then(() => {
-					const newPage = Math.max(1, search.page - 1);
-					void navigate({
-						search: { ...search, page: newPage },
-						replace: true,
-					});
-				});
+				void fetchPreviousPage();
 			}
 		},
 	});

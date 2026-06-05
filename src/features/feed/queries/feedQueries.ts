@@ -23,26 +23,18 @@ async function getFeed({ page, limit = 10, orderByField = "score", sortDirection
 }
 
 export interface UseFeedOptions {
-	initialPage?: number;
 	orderByField?: string;
 	sortDirection?: "ASC" | "DESC";
 }
 
 export function useFeed(options?: UseFeedOptions) {
-	const initialPage = options?.initialPage || 1;
-	
 	return useInfiniteQuery({
 		queryKey: feedKeys.list(options),
-		queryFn: ({ pageParam = initialPage }) => getFeed({ page: pageParam, ...options }),
-		initialPageParam: initialPage,
+		queryFn: ({ pageParam = 1 }) => getFeed({ page: pageParam, ...options }),
+		initialPageParam: 1,
 		getNextPageParam: (lastPage, allPages) => {
 			if (lastPage.meta.is_last_page) return undefined;
-			return allPages.length + initialPage;
-		},
-		getPreviousPageParam: (_firstPage, allPages) => {
-			const firstPageNumber = initialPage + allPages.length - 1;
-			if (firstPageNumber <= initialPage) return undefined;
-			return firstPageNumber - 1;
+			return allPages.length + 1;
 		},
 		refetchOnWindowFocus: false,
 		staleTime: 1000 * 60 * 5,

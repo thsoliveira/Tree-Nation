@@ -5,7 +5,10 @@ import { Providers } from "./app/providers.tsx";
 import { routeTree } from "./app/router";
 import "./index.css";
 
-const router = createRouter({ routeTree });
+const router = createRouter({
+  routeTree,
+  basepath: import.meta.env.DEV ? "/" : "/Tree-Nation/",
+});
 
 const rootElement = document.getElementById("root");
 if (!rootElement) {

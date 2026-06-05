@@ -1,78 +1,134 @@
 # Tree-Nation
 
-Clean Vite + React 19 scaffold with a modern TypeScript stack.
+A modern React 19 application that displays an infinite-scrolling feed of trees planted around the world. Built with Vite, TypeScript, TanStack Query, and TanStack Router.
 
-## Stack Included
-
-- **React 19** — Latest React with concurrent features
-- **TypeScript** — Full type safety
-- **Vite** — Lightning-fast dev server and build tool
-- **Tailwind CSS** — Utility-first CSS framework
-- **@tanstack/react-query** — Server state management (installed)
-- **@tanstack/router** — Client-side routing (installed, ready to wire)
-- **Zod** — TypeScript-first schema validation
-- **Axios** — HTTP client
-- **Intersection Observer Hook** — `src/hooks/useIntersectionObserver.ts`
-- **Vitest** — Fast unit testing framework
-- **React Testing Library** — React component testing utilities
-
-## Getting Started
+## How to Run the Project
 
 ### Install Dependencies
 ```bash
 npm install
 ```
 
-### Development
+### Development Server
 ```bash
 npm run dev
 ```
 Open [http://localhost:5173](http://localhost:5173) in your browser.
 
-### Tests
+The app proxies API calls from `/api` to `https://youcannevertestenough.tree-nation.com` during development.
+
+### Build for Production
 ```bash
-npm run test          # Run tests once
-npm run test:watch    # Watch mode
-npm run test:ui       # UI dashboard
-npm run test:coverage # Coverage report
+npm run build
 ```
 
-### Build & Preview
+### Preview Production Build
 ```bash
-npm run build    # Build for production
-npm run preview  # Preview production build
-npm run lint     # Run ESLint
+npm run preview
 ```
 
-## File Structure
+### Run Tests
+```bash
+npm run test
+```
+Or in watch mode:
+```bash
+npm run test:watch
+```
+
+## App Structure
 
 ```
 src/
-├── App.tsx               # Root component
-├── main.tsx             # App entry point
-├── index.css            # Tailwind directives + styles
-├── App.test.tsx         # Example test
-├── setupTests.ts        # Vitest + Testing Library setup
-├── queryClient.ts       # TanStack Query client
-├── api/
-│   └── axios.ts         # Axios instance
-├── hooks/
-│   └── useIntersectionObserver.ts
-└── schemas/
-    └── example.ts       # Zod schema example
+├── app/
+│   ├── providers.tsx          # QueryClient provider setup
+│   └── router.tsx             # TanStack Router configuration
+├── features/
+│   └── feed/
+│       ├── __tests__/
+│       │   ├── components/
+│       │   │   ├── ActivityItem.test.tsx
+│       │   │   ├── ActivityList.test.tsx
+│       │   │   ├── CommentActivity.test.tsx
+│       │   │   ├── FeedList.test.tsx
+│       │   │   ├── LikeActivity.test.tsx
+│       │   │   └── TreeCard.test.tsx
+│       │   └── utils/
+│       │       └── activities.test.ts
+│       ├── components/
+│       │   ├── page/
+│       │   │   └── FeedsList.tsx  # Infinite scroll container
+│       │   └── ui/
+│       │       ├── ActivityItem.tsx
+│       │       ├── ActivityList.tsx
+│       │       ├── CommentActivity.tsx
+│       │       ├── FeedActionBanner.tsx
+│       │       ├── FeedLoadingState.tsx
+│       │       ├── FeedStatusCard.tsx
+│       │       ├── LikeActivity.tsx
+│       │       ├── LikeButton.tsx
+│       │       ├── TreeCard.tsx
+│       │       └── TreeImage.tsx
+│       ├── queries/
+│       │   ├── activityQueries.ts
+│       │   ├── commentsQueries.ts
+│       │   ├── feedQueries.ts
+│       │   └── likesQueries.ts
+│       ├── types.ts
+│       ├── queryKeys.ts
+│       └── utils/
+│           └── activities.ts
+├── routes/
+│   └── feed.tsx
+├── shared/
+│   ├── api/
+│   │   └── index.tsx
+│   ├── components/
+│   │   └── Avatar.tsx
+│   ├── constants.ts
+│   └── utils/
+│       └── index.tsx
+├── main.tsx
+├── index.css
+├── queryClient.ts
+└── setupTests.ts
 ```
 
-## Next Steps
+## API Endpoints
 
-- **Add TanStack Router**: Wire up `src/routes.tsx` with `RouterProvider` for SPA navigation
-- **Add TanStack Query**: Use `useQuery` hooks with the configured `queryClient`
-- **Build Pages**: Create feature-specific pages and components with Tailwind styling
-- **Write Tests**: Add more tests using Vitest + React Testing Library
+All endpoints are proxied through `/api` in development and point to `https://youcannevertestenough.tree-nation.com/` in production.
 
-## Notes
+| Method | Endpoint | Purpose | Query Parameters |
+|--------|----------|---------|------------------|
+| GET | `/trees/feed` | Get paginated tree feed | `page`, `limit` (default: 10), `orderByField` (default: "score"), `sortDirection` (default: "DESC") |
+| GET | `/tree/getComments/:treeId` | Get comments for a tree | None |
+| GET | `/tree/getLikes/:treeId` | Get likes for a tree | None |
 
-- All packages are installed and ready to use
-- Tailwind CSS is pre-configured with PostCSS
-- ESLint is set up with React and TypeScript rules
-- vitest globals are enabled in `tsconfig.app.json` for test file convenience
+### Response Formats
 
+**Feed Response** (`/trees/feed`):
+```typescript
+{
+  data: Tree[],
+  meta: {
+    is_last_page: boolean
+  }
+}
+```
+
+**Comments/Likes Response** (`/tree/getComments/:treeId`, `/tree/getLikes/:treeId`):
+```typescript
+{
+  data: Comment[] | Like[]
+}
+```
+
+## Assumptions
+
+1. **Infinite Scroll Feed**: Users can continuously scroll to load more trees.
+2. **Tree Card Interactions**: Each tree has expandable details with comments and likes.
+3. **Lazy Loading**: Comments and likes are only fetched when a tree card is expanded.
+4. **Responsive Design**: The app works well on both mobile and desktop screens.
+5. **Caching**: TanStack Query caches tree feed, comments, and likes data for a better user experience.
+6. **User Avatars**: Users have optional profile images, falling back to initials if unavailable.
+7. **Sorting**: The feed can be sorted by different fields in ascending or descending order.

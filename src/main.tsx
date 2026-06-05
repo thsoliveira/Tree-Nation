@@ -1,21 +1,22 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import { Providers } from './app/providers.tsx'
-import { createRouter, RouterProvider } from '@tanstack/react-router'
-import { routeTree } from './app/router'
-import './index.css'
+import { createRouter, RouterProvider } from "@tanstack/react-router";
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { Providers } from "./app/providers.tsx";
+import { routeTree } from "./app/router";
+import "./index.css";
 
 const router = createRouter({ routeTree });
 
-const rootElement = document.getElementById('root')
+const rootElement = document.getElementById("root");
 if (!rootElement) {
-  throw new Error('Root element not found')
+	throw new Error("Root element not found");
 }
 
 createRoot(rootElement).render(
-  <StrictMode>
-   <Providers>
-    <RouterProvider router={router} />
-  </Providers>,
-  </StrictMode>,
-)
+	<StrictMode>
+		<Providers>
+			<RouterProvider router={router} />
+		</Providers>
+		,
+	</StrictMode>,
+);

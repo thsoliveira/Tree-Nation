@@ -5,8 +5,7 @@ import { Providers } from './app/providers.tsx'
 import { createRouter, RouterProvider } from '@tanstack/react-router'
 import { routeTree } from './app/router'
 
-const router = createRouter({ routeTree })
-
+const router = createRouter({ routeTree });
 
 const rootElement = document.getElementById('root')
 if (!rootElement) {

@@ -132,5 +132,7 @@ All endpoints are proxied through `/api` in development and point to `https://yo
 5. **Caching**: TanStack Query caches tree feed, comments, and likes data for a better user experience and reduced API calls.
 6. **State Management**: Loading, empty, and error states are explicitly handled for all API endpoints.
 7. **API Integration**: Uses real public API endpoints without authentication. Auth-only behaviors (like `is_liked` flag) are ignored.
-8. **Sorting**: Feed is sorted by `score` in descending order by default. Comments and likes are sorted by `created_at`.
-9. **User Avatars**: Users have optional profile images, falling back to initials if unavailable.
+8. **Sorting**: Comments and likes are merged and sorted by `created_at` in descending order. Feed is sorted by `score` in descending order by default (no user-facing sort controls implemented).
+9. **Architecture**: Uses feature-based directory structure with separate concerns for components, queries, types, and utilities.
+10. **Data Fetching**: Uses TanStack Query for server state management with pagination and infinite scroll.
+11. **Routing**: Uses TanStack Router for URL-based state management and navigation.

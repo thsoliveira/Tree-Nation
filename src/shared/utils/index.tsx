@@ -2,13 +2,28 @@ import { Temporal } from "@js-temporal/polyfill";
 import { DEFAULT_THUMBNAIL_SIZE, THUMBNAIL_BASE_URL } from "../constants";
 
 export function formatDate(dateString: string): string {
-	return Temporal.Instant.from(dateString)
-		.toZonedDateTimeISO(Temporal.Now.timeZoneId())
-		.toLocaleString("en-US", {
-			year: "numeric",
-			month: "short",
-			day: "numeric",
-		});
+	let temporalDate;
+	try {
+		temporalDate = Temporal.Instant.from(dateString);
+	} catch {
+		temporalDate = Temporal.PlainDate.from(dateString);
+	}
+
+	if ("toZonedDateTimeISO" in temporalDate) {
+		return temporalDate
+			.toZonedDateTimeISO(Temporal.Now.timeZoneId())
+			.toLocaleString("en-US", {
+				year: "numeric",
+				month: "short",
+				day: "numeric",
+			});
+	}
+
+	return temporalDate.toLocaleString("en-US", {
+		year: "numeric",
+		month: "short",
+		day: "numeric",
+	});
 }
 
 interface CleanImageUrlOptions {

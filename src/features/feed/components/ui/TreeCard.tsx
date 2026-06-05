@@ -30,7 +30,7 @@ export function TreeCard({ tree }: TreeCardProps) {
 	};
 
 	return (
-		<article className="bg-white rounded-xl sm:rounded-2xl border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-200">
+		<article className="bg-white my-4 rounded-xl sm:rounded-2xl border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-200">
 			<TreeImage src={tree.image || ""} alt={tree.species || "Tree"} />
 
 			<div className="p-4 sm:p-6">

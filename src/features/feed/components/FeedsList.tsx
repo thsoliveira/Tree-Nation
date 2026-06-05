@@ -1,12 +1,20 @@
-import { useFeed } from "../../../hooks/use-feed"
-import { TreeCard } from "./TreeCard"
-
+import { useFeed } from '../../../hooks/use-feed'
+import { TreeCard } from './TreeCard'
+import { useInView } from 'react-intersection-observer'
 
 export function FeedList() {
-  const { data, status, isFetchingNextPage } = useFeed()
+  const { data, status, isFetchingNextPage, fetchNextPage, hasNextPage } = useFeed()
   const trees = data?.pages.flatMap((page) => page.data) || []
   const isFirstLoad = status === 'pending' && !data
 
+  const { ref } = useInView({
+    threshold: 0.1,
+    onChange: (inView) => {
+      if (inView && hasNextPage && !isFetchingNextPage) {
+        fetchNextPage()
+      }
+    },
+  })
 
   if (status === 'error') {
     return (
@@ -30,8 +38,13 @@ export function FeedList() {
 
   return (
     <div className="space-y-6">
-      {!isFirstLoad  && (
-         trees.map((tree) => (
+      {isFirstLoad ? (
+        <div className="text-center py-8">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-blue-500 border-t-transparent"></div>
+          <p className="text-gray-500 mt-2">Loading trees...</p>
+        </div>
+      ) : (
+        trees.map((tree) => (
           <TreeCard key={tree.id} tree={tree} />
         ))
       )}
@@ -43,6 +56,9 @@ export function FeedList() {
         </div>
       )}
       
+      {hasNextPage && (
+        <div ref={ref} className="py-8 text-center" />
+      )}
     </div>
   )
 }

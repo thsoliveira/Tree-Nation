@@ -39,7 +39,7 @@ export const TreeSchema = z.object({
   replanters_num: z.number(),
   replanters_distinct_num: z.number(),
   num_replants: z.number(),
-  replant_header: z.array(z.any()),
+  replant_header: z.any(),
   species: z.string().nullable().optional(),
   birth_date: z.string(),
   is_liked: z.any().nullable().optional(),

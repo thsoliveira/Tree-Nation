@@ -1,10 +1,15 @@
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { getFeed } from '../features/feed/api/get-feed'
 
-export function useFeed() {
+interface UseFeedOptions {
+  orderByField?: string
+  sortDirection?: "ASC" | "DESC"
+}
+
+export function useFeed(options?: UseFeedOptions) {
   return useInfiniteQuery({
-    queryKey: ['feed'],
-    queryFn: ({ pageParam = 1 }) => getFeed({ page: pageParam }),
+    queryKey: ['feed', options?.orderByField, options?.sortDirection],
+    queryFn: ({ pageParam = 1 }) => getFeed({ page: pageParam, ...options }),
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {
       if (lastPage.meta.is_last_page) {

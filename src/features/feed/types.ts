@@ -53,6 +53,23 @@ export const TreeSchema = z.object({
   can_be_replanted: z.boolean(),
 })
 
+export const CommentSchema = z.object({
+  id: z.number(),
+  content: z.string().nullable().optional(),
+  author: UserSchema.nullable().optional(),
+  created_at: z.string(),
+  author_id: z.number().nullable().optional(),
+  tree_id: z.number().nullable().optional(),
+})
+
+export const LikeSchema = z.object({
+  id: z.number(),
+  author: UserSchema.nullable().optional(),
+  created_at: z.string(),
+  author_id: z.number().nullable().optional(),
+  tree_id: z.number().nullable().optional(),
+})
+
 export const FeedResponseSchema = z.object({
   data: z.array(TreeSchema),
   meta: z.object({
@@ -62,7 +79,8 @@ export const FeedResponseSchema = z.object({
 
 export type User = z.infer<typeof UserSchema>
 export type Tree = z.infer<typeof TreeSchema>
+export type Comment = z.infer<typeof CommentSchema>
+export type Like = z.infer<typeof LikeSchema>
 export type FeedResponse = z.infer<typeof FeedResponseSchema>
 
-
-
+export type Activity = (Comment & { type: 'comment' }) | (Like & { type: 'like' })

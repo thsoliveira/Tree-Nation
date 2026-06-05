@@ -18,9 +18,9 @@ export function FeedList() {
 
   if (status === 'error') {
     return (
-      <div className="text-center py-16 bg-white rounded-xl shadow-sm">
-        <div className="text-4xl mb-4">🌳</div>
-        <h2 className="text-xl font-semibold text-gray-900 mb-2">Failed to load feed</h2>
+      <div className="text-center py-12 sm:py-16 bg-white rounded-xl shadow-sm">
+        <div className="text-3xl sm:text-4xl mb-3 sm:mb-4">🌳</div>
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">Failed to load feed</h2>
         <p className="text-gray-500">Please try again later</p>
       </div>
     )
@@ -28,19 +28,19 @@ export function FeedList() {
 
   if (status === 'success' && trees.length === 0) {
     return (
-      <div className="text-center py-16 bg-white rounded-xl shadow-sm">
-        <div className="text-4xl mb-4">🌱</div>
-        <h2 className="text-xl font-semibold text-gray-900 mb-2">No trees yet</h2>
+      <div className="text-center py-12 sm:py-16 bg-white rounded-xl shadow-sm">
+        <div className="text-3xl sm:text-4xl mb-3 sm:mb-4">🌱</div>
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">No trees yet</h2>
         <p className="text-gray-500">Check back later for new trees</p>
       </div>
     )
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {isFirstLoad ? (
-        <div className="text-center py-8">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-blue-500 border-t-transparent"></div>
+        <div className="text-center py-6 sm:py-8">
+          <div className="inline-block animate-spin rounded-full h-7 w-7 sm:h-8 sm:w-8 border-4 border-blue-500 border-t-transparent"></div>
           <p className="text-gray-500 mt-2">Loading trees...</p>
         </div>
       ) : (
@@ -50,14 +50,14 @@ export function FeedList() {
       )}
       
       {!isFirstLoad && isFetchingNextPage && (
-        <div className="text-center py-8">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-blue-500 border-t-transparent"></div>
+        <div className="text-center py-6 sm:py-8">
+          <div className="inline-block animate-spin rounded-full h-7 w-7 sm:h-8 sm:w-8 border-4 border-blue-500 border-t-transparent"></div>
           <p className="text-gray-500 mt-2">Loading trees...</p>
         </div>
       )}
       
       {hasNextPage && (
-        <div ref={ref} className="py-8 text-center" />
+        <div ref={ref} className="py-6 sm:py-8 text-center" />
       )}
     </div>
   )

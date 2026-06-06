@@ -1,5 +1,10 @@
 import axios from "axios";
-import { API_BASE_URL } from "../constants";
+import {
+	API_BASE_URL,
+	TARGET_API,
+	USE_PROXY,
+	PROXY_BASE,
+} from "../constants";
 
 export const apiClient = axios.create({
 	baseURL: API_BASE_URL,
@@ -11,10 +16,9 @@ export const apiClient = axios.create({
 });
 
 apiClient.interceptors.request.use((config) => {
-	if (!import.meta.env.DEV) {
-		// For production: build full target URL with all query parameters
-		const targetBaseUrl = "https://youcannevertestenough.tree-nation.com";
-		const fullTargetUrl = new URL(config.url || "", targetBaseUrl);
+	if (USE_PROXY) {
+		// Build full target URL with all query parameters
+		const fullTargetUrl = new URL(config.url || "", TARGET_API);
 
 		if (config.params) {
 			Object.entries(config.params).forEach(([key, value]) => {
@@ -24,10 +28,8 @@ apiClient.interceptors.request.use((config) => {
 			});
 		}
 
-		// Now use allorigins proxy with the encoded full URL
-		const url = `https://corsproxy.io/?url=${encodeURIComponent(fullTargetUrl.toString())}`;
-
-		config.url = url;
+		// Use proxy with the encoded full URL
+		config.url = `${PROXY_BASE}${encodeURIComponent(fullTargetUrl.toString())}`;
 		config.baseURL = "";
 		config.params = {};
 	}

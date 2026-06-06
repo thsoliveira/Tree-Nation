@@ -30,7 +30,7 @@ export function InfiniteScrollLoader({
 					onLoadMore();
 				}
 			},
-			{ rootMargin: "200px" }
+			{ rootMargin: "200px" },
 		);
 
 		if (elementRef.current) {

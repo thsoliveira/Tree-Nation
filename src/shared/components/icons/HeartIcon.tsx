@@ -1,6 +1,9 @@
 import type { SVGProps } from "react";
 
-export function HeartIcon({ fill = "none", ...props }: SVGProps<SVGSVGElement>) {
+export function HeartIcon({
+	fill = "none",
+	...props
+}: SVGProps<SVGSVGElement>) {
 	return (
 		<svg
 			{...props}

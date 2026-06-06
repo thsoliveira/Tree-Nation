@@ -38,10 +38,13 @@ export function ActivityList({
 	}
 
 	return (
-		<ul className="space-y-4">
-			{activities.map((activity) => (
-				<ActivityItem key={activity?.id} activity={activity} />
-			))}
-		</ul>
-	);
+			<ul className="space-y-4">
+				{activities.map((activity) => (
+					<ActivityItem
+						key={`${activity.type}-${activity.id}`}
+						activity={activity}
+					/>
+				))}
+			</ul>
+		);
 }

@@ -32,7 +32,7 @@ const renderWithProviders = (component: React.ReactNode) => {
 
 describe("FeedList Integration Tests", () => {
 	it("should render loading state initially and then trees on success", async () => {
-		renderWithProviders(<FeedList />);
+		renderWithProviders(<FeedList disableVirtualization={true} />);
 
 		expect(screen.getByText(/Loading trees/i)).toBeInTheDocument();
 
@@ -50,7 +50,7 @@ describe("FeedList Integration Tests", () => {
 			}),
 		);
 
-		renderWithProviders(<FeedList />);
+		renderWithProviders(<FeedList disableVirtualization={true} />);
 
 		await waitFor(() => {
 			expect(screen.getByText(/Failed to load feed/i)).toBeInTheDocument();
@@ -67,7 +67,7 @@ describe("FeedList Integration Tests", () => {
 			}),
 		);
 
-		renderWithProviders(<FeedList />);
+		renderWithProviders(<FeedList disableVirtualization={true} />);
 
 		await waitFor(() => {
 			expect(screen.getByText(/No trees yet/i)).toBeInTheDocument();

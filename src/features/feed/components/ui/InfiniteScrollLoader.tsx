@@ -11,21 +11,17 @@ export function InfiniteScrollLoader({
 	hasMore,
 	onLoadMore,
 }: InfiniteScrollLoaderProps) {
-	const observerRef = useRef<IntersectionObserver | null>(null);
 	const elementRef = useRef<HTMLDivElement | null>(null);
 
 	useEffect(() => {
-		if (isLoading || !hasMore) {
+		const element = elementRef.current;
+
+		if (!element || isLoading || !hasMore) {
 			return;
 		}
 
-		if (observerRef.current) {
-			observerRef.current.disconnect();
-		}
-
-		observerRef.current = new IntersectionObserver(
-			(entries) => {
-				const [entry] = entries;
+		const observer = new IntersectionObserver(
+			([entry]) => {
 				if (entry?.isIntersecting) {
 					onLoadMore();
 				}
@@ -33,12 +29,10 @@ export function InfiniteScrollLoader({
 			{ rootMargin: "200px" },
 		);
 
-		if (elementRef.current) {
-			observerRef.current.observe(elementRef.current);
-		}
+		observer.observe(element);
 
 		return () => {
-			observerRef.current?.disconnect();
+			observer.disconnect();
 		};
 	}, [isLoading, hasMore, onLoadMore]);
 

@@ -1,3 +1,5 @@
+import { useVirtualizer } from "@tanstack/react-virtual";
+import { useRef } from "react";
 import { Button } from "../../../../shared/components/Button";
 import { useFeed } from "../../queries/feedQueries";
 import { FeedbackBanner } from "../ui/FeedbackBanner";
@@ -6,7 +8,11 @@ import { FeedStatusCard } from "../ui/FeedStatusCard";
 import { InfiniteScrollLoader } from "../ui/InfiniteScrollLoader";
 import { TreeCard } from "../ui/TreeCard";
 
-export function FeedList() {
+interface FeedListProps {
+	disableVirtualization?: boolean;
+}
+
+export function FeedList({ disableVirtualization = false }: FeedListProps) {
 	const {
 		data,
 		status,
@@ -24,6 +30,17 @@ export function FeedList() {
 	const trees = data?.pages.flatMap((page) => page.data) || [];
 	const hasTrees = trees.length > 0;
 	const isFirstLoad = status === "pending" && !data;
+
+	const parentRef = useRef<HTMLDivElement>(null);
+
+	const virtualizer = useVirtualizer({
+		count: trees.length,
+		getScrollElement: () => document.documentElement,
+		estimateSize: () => 500 + 24,
+		overscan: 5,
+	});
+
+	const virtualItems = virtualizer.getVirtualItems();
 
 	if (status === "error" && !hasTrees) {
 		return (
@@ -46,7 +63,7 @@ export function FeedList() {
 	}
 
 	return (
-		<div>
+		<div ref={parentRef}>
 			{hasPreviousPage && !isFetchPreviousPageError && (
 				<div className="py-6 sm:py-8 text-center" />
 			)}
@@ -68,15 +85,48 @@ export function FeedList() {
 				<FeedLoadingState message="Loading previous trees..." />
 			)}
 
-			<div role="feed" aria-live="polite">
+			<div
+				role="feed"
+				aria-live="polite"
+				style={
+					!disableVirtualization
+						? {
+								height: `${virtualizer.getTotalSize()}px`,
+								width: "100%",
+								position: "relative",
+						  }
+						: undefined
+				}
+			>
 				{isFirstLoad ? (
 					<FeedLoadingState message="Loading trees..." />
-				) : (
+				) : disableVirtualization ? (
 					trees.map((tree) => (
 						<div key={tree.id} className="mb-4 sm:mb-6">
 							<TreeCard tree={tree} />
 						</div>
 					))
+				) : (
+					virtualItems.map((virtualItem) => {
+						const tree = trees[virtualItem.index];
+						return (
+							<div
+								key={virtualItem.key}
+								data-index={virtualItem.index}
+								ref={virtualizer.measureElement}
+								style={{
+									position: "absolute",
+									top: 0,
+									left: 0,
+									width: "100%",
+									transform: `translateY(${virtualItem.start}px)`,
+								}}
+								className="mb-4 sm:mb-6"
+							>
+								<TreeCard tree={tree} />
+							</div>
+						);
+					})
 				)}
 			</div>
 
